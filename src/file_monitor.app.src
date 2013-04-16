@@ -1,0 +1,5 @@
+{application, file_monitor, [ {description, "file_monitor"}
+                            , {vsn,          git}
+                            , {registered,   [file_monitor]}
+                            , {applications, [kernel, stdlib]}
+                            ]}.
