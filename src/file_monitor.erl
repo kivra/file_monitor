@@ -1025,7 +1025,14 @@ get_file_info(Path) when is_list(Path) ->
 
 list_dir(Path) when is_list(Path) ->
     Files = case file:list_dir(Path) of
-		{ok, Fs} -> [normalize_path(F) || F <- Fs];
+		{ok, Fs}   ->
+                    lists:flatmap(
+                      fun(F) ->
+                          case file:open(filename:join(Path, F), [write, exclusive]) of
+                              {ok, FD} -> file:close(FD), [normalize_path(F)];
+                              {error, eexist} -> []
+                          end
+                      end, Fs);
 		{error, _} -> []
 	    end,
     lists:sort(Files).
